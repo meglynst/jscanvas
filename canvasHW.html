@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Canvas HW</title>
+	<style type="text/css">
+		canvas{
+			border: 1px solid black;
+		}
+	</style>
+
+
+</head>
+<body>
+	<h1>Canvas HW - SI 539 W19</h1>
+	<canvas id="canvas" width="500" height="500">
+  An alternative text describing what your canvas displays. 
+</canvas>
+<input type="color" id="bgcolor" value="#ff0000" oninput = "colorChange(this)"/>
+
+<script>
+	var canvas = document.querySelector('canvas');
+	var ctx = canvas.getContext('2d');
+	var x = 0;
+	var y = 0;
+	var color = "red";
+	var radius = 20;
+
+	// function to resize canvas based on screen size. Based on code found here: https://stackoverflow.com/questions/39563033/how-to-resize-the-canvas-using-javascript
+	window.addEventListener('resize', resizeCanvas, false);
+
+    function resizeCanvas() {
+    	canvasWidth = (window.innerWidth) * 0.8;
+    	canvasHeight = (window.innerHeight) * 0.8;
+    	canvas.width = canvasWidth;
+    	canvas.height = canvasHeight;
+  	}
+
+  	resizeCanvas();
+
+	function draw (){
+		ctx.beginPath();
+		ctx.fillStyle = color;
+		ctx.arc(x,y,radius,0,2 * Math.PI);
+		// ctx.stroke();
+		ctx.fill();
+	}
+	// ctx.beginPath();
+	// ctx.fillStyle = "red"
+	// ctx.arc(250,250,50,0,2 * Math.PI);
+	// ctx.stroke();
+	// ctx.fill();
+	window.addEventListener('mousemove',function(e) {
+		// console.log(e.pageX);
+		// console.log(e.pageY);
+		x = e.offsetX;
+		y = e.offsetY;
+		draw();
+	});
+
+	// function here: https://stackoverflow.com/questions/17130940/retrieve-the-same-offsetx-on-touch-like-mouse-event/33756703 for rect.left and rect.rigth elements to get touch event to be under finger.
+	window.addEventListener("touchmove",function(e) {
+		var rect = e.target.getBoundingClientRect();
+		x = e.targetTouches[0].pageX - rect.left;
+		y = e.targetTouches[0].pageY - rect.top;
+		draw();
+	})
+
+	window.addEventListener('keyup',function(e) {
+		//if keyCode is 66, make the color blue
+		//if keyCode is up or down, change the radius
+		console.log(e.keyCode);
+		//change color on keys
+		 if (e.keyCode == 66) {
+		 	color = "blue";
+		 }
+		 if (e.keyCode == 71) {
+		 	color = "green";
+		 }
+		 if (e.keyCode == 82) {
+		 	color = "red";
+		 }
+		 if (e.keyCode == 89) {
+		 	color = "yellow";
+		 }
+		 if (e.keyCode == 38) {
+		 	radius = radius + 1;
+		 }
+		 //change radius of circle
+		 if (e.keyCode == 40) {
+		 	//check to ensure it can't go below zero
+		 	if (radius < 2) {
+		 		radius = 1;
+		 	} else {
+		 		radius = radius - 1;
+		 	}
+		 }
+		 //to clear canvas. Found @ https://stackoverflow.com/questions/2142535/how-to-clear-the-canvas-for-redrawing
+		 if (e.keyCode == 32) {
+		 	const context = canvas.getContext('2d');
+		 	context.clearRect(0, 0, canvas.width, canvas.height);
+		 }
+		draw();
+	});
+
+	//clears canvas on rotation of mobile device
+	window.addEventListener("orientationchange", function() {
+    	const context = canvas.getContext('2d');
+		context.clearRect(0, 0, canvas.width, canvas.height);
+	});
+
+	function colorChange(elem) {
+ 		color = elem.value;
+	}
+
+	
+</script>
